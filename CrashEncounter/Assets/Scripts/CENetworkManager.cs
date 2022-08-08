@@ -1,0 +1,43 @@
+using Mirror;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Runamuck
+{
+    public class CENetworkManager : NetworkManager
+    {
+        [SerializeField] private List<Spawner> spawnLocations;
+
+        public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+        {
+            // add player at correct spawn position
+            if (numPlayers >= spawnLocations.Count)
+                return;
+
+            Spawner spawner = spawnLocations.Find(s => s.Owner == null);
+            if(spawner == null)
+            {
+                Debug.LogWarning("All spawn locations are taken, player cannot join");
+                return;
+            }
+            Transform startLoc = spawner.transform;
+            GameObject playerGO = Instantiate(playerPrefab, startLoc.position, startLoc.rotation);
+            NetworkServer.AddPlayerForConnection(conn, playerGO);
+
+            var player = playerGO.GetComponent<Player>();
+            spawner.Capture(player);
+        }
+
+        public override void OnServerDisconnect(NetworkConnectionToClient conn)
+        {
+            var playerDisconnecting = conn.identity.gameObject; // TODO not sure if this is player disconnecting or local player
+            foreach(Spawner spawner in spawnLocations)
+            {
+                spawner.GiveUpOwnership();
+            }
+
+            base.OnServerDisconnect(conn);
+        }
+    }
+}
