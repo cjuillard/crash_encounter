@@ -31,10 +31,11 @@ namespace Runamuck
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
-            var playerDisconnecting = conn.identity.gameObject; // TODO not sure if this is player disconnecting or local player
+            var playerDisconnecting = conn.identity.gameObject;
             foreach(Spawner spawner in spawnLocations)
             {
-                spawner.GiveUpOwnership();
+                if(spawner.Owner == playerDisconnecting)
+                    spawner.GiveUpOwnership();
             }
 
             base.OnServerDisconnect(conn);
