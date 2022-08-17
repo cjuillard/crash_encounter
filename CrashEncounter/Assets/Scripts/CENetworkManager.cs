@@ -9,6 +9,8 @@ namespace Runamuck
     {
         [SerializeField] private List<Spawner> spawnLocations;
 
+        private int serverPlayerIndex;
+
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
             // add player at correct spawn position
@@ -26,6 +28,7 @@ namespace Runamuck
             NetworkServer.AddPlayerForConnection(conn, playerGO);
 
             var player = playerGO.GetComponent<Player>();
+            player.Init(serverPlayerIndex++);
             spawner.Capture(player);
         }
 

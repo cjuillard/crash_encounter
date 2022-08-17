@@ -11,18 +11,20 @@ namespace Runamuck
         [SerializeField] private Image attackArrow;
         [SerializeField] private Canvas canvas;
 
-        private Camera camera;
+        private Camera mainCam;
+        private Spawner startSpawner;
 
         private void Start()
         {
-            camera = FindObjectOfType<Camera>();
+            mainCam = FindObjectOfType<Camera>();
         }
 
-        public void SetAttackArrowEnabled(Transform startPos)
+        public void SetAttackArrowEnabled(Spawner startSpawner)
         {
+            this.startSpawner = startSpawner;
             attackArrow.gameObject.SetActive(true);
 
-            Vector3 screenPos = camera.WorldToViewportPoint(startPos.position);
+            Vector3 screenPos = mainCam.WorldToViewportPoint(startSpawner.transform.position);
             attackArrow.rectTransform.anchorMin = screenPos;
             attackArrow.rectTransform.anchorMax = screenPos;
 
@@ -34,10 +36,14 @@ namespace Runamuck
         public void SetAttackArrowDisabled()
         {
             attackArrow.gameObject.SetActive(false);
+            startSpawner = null;
         }
 
         public void SetArrowTarget(Vector3 mousePosition)
         {
+            if (startSpawner == null)
+                return;
+            
             Vector3 attackArrowStart = attackArrow.transform.position;            
             Vector2 delta = new Vector2(mousePosition.x, mousePosition.y) - new Vector2(attackArrowStart.x, attackArrowStart.y);
 
@@ -49,6 +55,30 @@ namespace Runamuck
             Vector2 offsetMax = attackArrow.rectTransform.offsetMax;
             offsetMax.x = dist * canvas.scaleFactor;
             attackArrow.rectTransform.offsetMax = offsetMax;
+        }
+
+        private RaycastHit[] results = new RaycastHit[16];
+        public bool GetSpawnerAtMousePos(Vector3 mousePosition, out Spawner spawner)
+        {
+            spawner = null;
+            Ray ray = mainCam.ScreenPointToRay(mousePosition);
+            
+            int hitCount = Physics.RaycastNonAlloc(ray, results);
+            if (hitCount == 0)
+                return false;
+
+            for(int i = 0; i < hitCount; i++)
+            {
+                var result = results[i];
+                var hitSpawner = result.collider.GetComponentInParent<Spawner>();
+                if(hitSpawner != null)
+                {
+                    spawner = hitSpawner;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
