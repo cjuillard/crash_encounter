@@ -36,10 +36,16 @@ namespace Runamuck
         private Material meshMat;
         private int ticksTillSpawn;
 
-        private void Start()
+        private void Awake()
         {
             this.screen = FindObjectOfType<GameplayScreenUI>();
             this.meshMat = meshRenderer.material;
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            UpdateColor();
         }
 
         void FixedUpdate()
@@ -58,10 +64,25 @@ namespace Runamuck
             }
         }
 
-        void OnOwnerChange(Player oldOwner, Player newOwner)
+        public void IncrementActiveCount()
+        {
+            activeCount++;
+        }
+
+        public void DecrementActiveCount()
+        {
+            activeCount--;
+        }
+
+        private void UpdateColor()
         {
             Color newColor = owner != null ? owner.TeamColor : Color.gray;
             meshMat.SetColor(BaseColorID, newColor);
+        }
+
+        void OnOwnerChange(Player oldOwner, Player newOwner)
+        {
+            UpdateColor();
         }
 
         public void StartAttack(Spawner other)
@@ -96,7 +117,7 @@ namespace Runamuck
                     NetworkServer.Spawn(go);
                 }
 
-                yield return new WaitForSeconds(.25f);
+                yield return new WaitForSeconds(.5f);
             }
             yield return null;
         }

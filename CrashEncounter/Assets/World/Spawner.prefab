@@ -381,5 +381,8 @@ MonoBehaviour:
   pawnPrefab: {fileID: 6016446895776418819, guid: 1200fd652ac410948bf880585fc5ee00, type: 3}
   spawnRateInTicks: 50
   meshRenderer: {fileID: 9141501773626423812}
+  spawnOffset: 2
+  maxWaveSize: 5
+  offsetSize: 3
   activeCount: 5
   owner: {fileID: 0}

@@ -25,10 +25,10 @@ namespace Runamuck
             }
             Transform startLoc = spawner.transform;
             GameObject playerGO = Instantiate(playerPrefab, startLoc.position, startLoc.rotation);
-            NetworkServer.AddPlayerForConnection(conn, playerGO);
-
             var player = playerGO.GetComponent<Player>();
             player.Init(serverPlayerIndex++);
+            NetworkServer.AddPlayerForConnection(conn, playerGO);
+
             spawner.Capture(player);
         }
 
