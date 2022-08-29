@@ -57,7 +57,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -147,6 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackArrow: {fileID: 8881410263292217808}
   canvas: {fileID: 5315486665588131523}
+  startButton: {fileID: 0}
 --- !u!1 &5315486666400958654
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ namespace Runamuck
     {
         [SerializeField] private Image attackArrow;
         [SerializeField] private Canvas canvas;
+        [SerializeField] private Button startButton;
 
         private Camera mainCam;
         private Spawner startSpawner;
@@ -37,6 +38,11 @@ namespace Runamuck
         {
             attackArrow.gameObject.SetActive(false);
             startSpawner = null;
+        }
+
+        public void OnStartGameClicked()
+        {
+            // TODO NO_COMMIT Don't show the screen until you've chosen host or client
         }
 
         public void SetArrowTarget(Vector3 mousePosition)
