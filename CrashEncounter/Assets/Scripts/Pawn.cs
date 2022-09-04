@@ -14,6 +14,7 @@ namespace Runamuck
 
         [SyncVar] [SerializeField]
         private Player owner;
+        public Player Owner => owner;
 
         [SyncVar] [SerializeField]
         private Spawner target;

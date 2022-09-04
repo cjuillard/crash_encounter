@@ -10,14 +10,26 @@ namespace Runamuck
     {
         [SerializeField] private Image attackArrow;
         [SerializeField] private Canvas canvas;
-        [SerializeField] private Button startButton;
+        [SerializeField] private GameObject loseWindow;
+        [SerializeField] private GameObject winWindow;
 
         private Camera mainCam;
+
+        private Player player;
         private Spawner startSpawner;
 
         private void Start()
         {
             mainCam = FindObjectOfType<Camera>();
+        }
+
+        public void OnGameStart()
+        {
+            foreach(Player player in FindObjectsOfType<Player>())
+            {
+                if (player.isLocalPlayer)
+                    this.player = player;
+            }
         }
 
         public void SetAttackArrowEnabled(Spawner startSpawner)
@@ -40,9 +52,9 @@ namespace Runamuck
             startSpawner = null;
         }
 
-        public void OnStartGameClicked()
+        private void Update()
         {
-            // TODO NO_COMMIT Don't show the screen until you've chosen host or client
+            
         }
 
         public void SetArrowTarget(Vector3 mousePosition)
@@ -64,6 +76,7 @@ namespace Runamuck
         }
 
         private RaycastHit[] results = new RaycastHit[16];
+
         public bool GetSpawnerAtMousePos(Vector3 mousePosition, out Spawner spawner)
         {
             spawner = null;
@@ -85,6 +98,17 @@ namespace Runamuck
             }
 
             return false;
+        }
+
+        public void OnGameOver(Player winner)
+        {
+            if(player == winner)
+            {
+                winWindow.SetActive(true);
+            } else
+            {
+                loseWindow.SetActive(true);
+            }
         }
     }
 }

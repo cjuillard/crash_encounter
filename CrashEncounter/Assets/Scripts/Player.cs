@@ -8,11 +8,12 @@ namespace Runamuck
 {
     public class Player : NetworkBehaviour
     {
-        [SerializeField] private GameObject pawnPrefab;
-        
         [SyncVar] [SerializeField] private int playerIndex;
         [SyncVar] [SerializeField] private Color teamColor;
         public Color TeamColor => teamColor;
+
+        [SyncVar] [SerializeField] private bool isAlive;
+        public bool IsAlive => isAlive;
 
         public override void OnStartServer()
         {
@@ -33,6 +34,14 @@ namespace Runamuck
                 return;
 
             spawner.StartAttack(other);
+        }
+
+        public void SetIsAlive(bool isAlive)
+        {
+            if (this.isAlive == isAlive)
+                return;
+
+            this.isAlive = isAlive;
         }
 
         //[Command]

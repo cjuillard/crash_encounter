@@ -21,6 +21,8 @@ namespace Runamuck
     /// </summary>
     public class CENetworkRoomManager : NetworkRoomManager
     {
+        [SerializeField] private GameState gameStatePrefab;
+        
         private SpawnerList spawnerList;
         private List<Spawner> Spawns
         {
@@ -36,27 +38,6 @@ namespace Runamuck
         }
 
         private int serverPlayerIndex;
-
-        //public override void OnServerAddPlayer(NetworkConnectionToClient conn)
-        //{
-        //    // add player at correct spawn position
-        //    if (numPlayers >= Spawns.Count)
-        //        return;
-
-        //    Spawner spawner = Spawns.Find(s => s.Owner == null);
-        //    if (spawner == null)
-        //    {
-        //        Debug.LogWarning("All spawn locations are taken, player cannot join");
-        //        return;
-        //    }
-        //    Transform startLoc = spawner.transform;
-        //    GameObject playerGO = Instantiate(playerPrefab, startLoc.position, startLoc.rotation);
-        //    var player = playerGO.GetComponent<Player>();
-        //    player.Init(serverPlayerIndex++);
-        //    NetworkServer.AddPlayerForConnection(conn, playerGO);
-
-        //    spawner.Capture(player);
-        //}
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
@@ -110,29 +91,6 @@ namespace Runamuck
         /// <param name="sceneName">Name of the new scene.</param>
         public override void OnRoomServerSceneChanged(string sceneName) 
         {
-            if(sceneName.EndsWith("Game.unity") && (mode == NetworkManagerMode.Host || mode == NetworkManagerMode.ServerOnly))
-            {
-                Spawner[] spawners = FindObjectsOfType<Spawner>();
-                foreach(Player player in FindObjectsOfType<Player>())
-                {
-                    float minDist2 = float.MaxValue;
-                    Spawner closestSpawner = null;
-                    foreach(Spawner spawner in spawners)
-                    {
-                        float dist2 = (spawner.transform.position - player.transform.position).sqrMagnitude;
-                        if(dist2 < minDist2)
-                        {
-                            minDist2 = dist2;
-                            closestSpawner = spawner;
-                        }
-                    }
-
-                    if(closestSpawner != null)
-                    {
-                        closestSpawner.Capture(player);
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -169,8 +127,6 @@ namespace Runamuck
             // Need to initialize this so I can capture the spawner even though the NetworkRoomManager will attempt it again
             NetworkServer.ReplacePlayerForConnection(conn, playerGO, true);
 
-            spawner.Capture(player);
-
             return playerGO;
         }
 
@@ -195,6 +151,11 @@ namespace Runamuck
         /// <returns>False to not allow this player to replace the room player.</returns>
         public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
         {
+            if(mode == NetworkManagerMode.Host)
+            {
+                var gameState = FindObjectOfType<GameState>();
+                gameState.InitPlayer(this, conn, roomPlayer, gamePlayer);
+            }
             return true;
         }
 
