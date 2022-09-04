@@ -33,6 +33,9 @@ namespace Runamuck
             if (spawner.Owner != this)
                 return;
 
+            if (spawner == other)
+                return;
+
             spawner.StartAttack(other);
         }
 
