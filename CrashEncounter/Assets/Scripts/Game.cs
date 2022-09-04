@@ -13,6 +13,7 @@ namespace Runamuck
         private void Awake()
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
     }
 }

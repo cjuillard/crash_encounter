@@ -122,13 +122,6 @@ namespace Runamuck
             yield return null;
         }
 
-        //// this is called on the tank that fired for all observers
-        //[ClientRpc]
-        //void RpcOnFire()
-        //{
-        //    animator.SetTrigger("Shoot");
-        //}
-
         public void Capture(Player player)
         {
             Owner = player;

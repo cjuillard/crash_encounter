@@ -53,7 +53,7 @@ namespace Runamuck
         {
             if (isServer)
             {
-                if (currPhase != GamePhase.Started)
+                if (currPhase != GamePhase.Started || Game.Instance.Config.DebugDontEndGame)
                     return;
 
                 // TODO Don't check this every frame
