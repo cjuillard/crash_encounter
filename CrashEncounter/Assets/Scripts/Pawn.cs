@@ -66,17 +66,7 @@ namespace Runamuck
             float moveStep = speed * Time.fixedDeltaTime;
             if(delta.sqrMagnitude < moveStep * moveStep)
             {
-                if(target.Owner == owner)
-                {
-                    target.IncrementActiveCount();
-                } else
-                {
-                    target.DecrementActiveCount();
-                    if (target.ActiveCount == 0)
-                        target.Capture(owner);
-                }
-                RpcSpawnImpact(transform.position);
-                StartCoroutine(DelayedDestroy());
+                transform.position = target.transform.position;
                 return;
             }
 
@@ -88,9 +78,57 @@ namespace Runamuck
         private bool isDying = false;
         public IEnumerator DelayedDestroy()
         {
+            if (isDying)
+                yield break;
+
             isDying = true;
             yield return null;
             NetworkServer.Destroy(gameObject);
+        }
+
+        public void ServerDestroy()
+        {
+            RpcSpawnImpact(transform.position);
+            StartCoroutine(DelayedDestroy());
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (!isServer)
+                return;
+
+            if (other.gameObject.CompareTag("Pawn"))
+            {
+                Pawn otherPawn = other.GetComponent<Pawn>();
+                if (otherPawn.Owner != owner)
+                {
+                    ServerDestroy();
+                    otherPawn.ServerDestroy();
+                }
+            }
+            else if (other.gameObject.CompareTag("Spawner"))
+            {
+                Spawner otherSpawner = other.GetComponent<Spawner>();
+                if (otherSpawner == target)
+                {
+                    AttackTarget();
+                }
+            }
+        }
+
+        private void AttackTarget()
+        {
+            if (target.Owner == owner)
+            {
+                target.IncrementActiveCount();
+            }
+            else
+            {
+                target.DecrementActiveCount();
+                if (target.ActiveCount == 0)
+                    target.Capture(owner);
+            }
+            ServerDestroy();
         }
     }
 }

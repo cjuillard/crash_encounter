@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4425259479973782267}
   - component: {fileID: 776437282684759390}
   - component: {fileID: 3252305717806995860}
-  - component: {fileID: 8083193288538938036}
   m_Layer: 0
   m_Name: Pawn3Visual
   m_TagString: Untagged
@@ -82,17 +81,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8083193288538938036
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3900819459701749825}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7086724536923379254, guid: 853369434adc60e47ab27ecbeac2bd10, type: 3}
