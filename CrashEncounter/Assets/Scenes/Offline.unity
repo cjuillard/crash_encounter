@@ -383,6 +383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 67b19f34519fb24479ecf52dfb465783, type: 2}
+  skin: {fileID: 11400000, guid: df9c2711a310d1b45a4e80dea808bf3f, type: 2}
 --- !u!4 &2088029115
 Transform:
   m_ObjectHideFlags: 0

@@ -18,7 +18,10 @@ namespace Runamuck
 
         [SyncVar] [SerializeField]
         private Spawner target;
-        
+
+        [SyncVar] [SerializeField] private Vector3 targetOffset;
+        public Vector3 TargetOffset => targetOffset;
+
         private Material meshMat;
 
         private void Awake()
@@ -26,16 +29,20 @@ namespace Runamuck
             this.meshMat = meshRenderer.material;
         }
 
-        public void Init(Player owner, Spawner target)
+        public void Init(Player owner, Spawner target, Vector3 targetOffset)
         {
             this.owner = owner;
             this.target = target;
+            this.targetOffset = targetOffset;
         }
 
         public override void OnStartClient()
         {
             base.OnStartClient();
             UpdateColor();
+
+            GameObject visualPrefab = Game.Skin.GetPawn(owner.PlayerIndex);
+            Instantiate(visualPrefab, transform);
         }
 
         private void UpdateColor()
@@ -44,12 +51,18 @@ namespace Runamuck
             meshMat.SetColor(BaseColorID, newColor);
         }
 
+        [ClientRpc]
+        public void RpcSpawnImpact(Vector3 impactPos)
+        {
+            Instantiate(Game.Skin.PawnImpactFX, impactPos, Quaternion.identity);
+        }
+
         private void FixedUpdate()
         {
-            if (!isServer)
+            if (!isServer || isDying)
                 return;
 
-            Vector3 delta = target.transform.position - transform.position;
+            Vector3 delta = (target.transform.position + targetOffset) - transform.position;
             float moveStep = speed * Time.fixedDeltaTime;
             if(delta.sqrMagnitude < moveStep * moveStep)
             {
@@ -62,11 +75,22 @@ namespace Runamuck
                     if (target.ActiveCount == 0)
                         target.Capture(owner);
                 }
-                NetworkServer.Destroy(gameObject);
+                RpcSpawnImpact(transform.position);
+                StartCoroutine(DelayedDestroy());
                 return;
             }
 
+            Vector3 dir = delta.normalized;
+            transform.SetPositionAndRotation(transform.position + moveStep * dir, Quaternion.FromToRotation(Vector3.forward, dir));
             transform.position += moveStep * delta.normalized;
+        }
+
+        private bool isDying = false;
+        public IEnumerator DelayedDestroy()
+        {
+            isDying = true;
+            yield return null;
+            NetworkServer.Destroy(gameObject);
         }
     }
 }

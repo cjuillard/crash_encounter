@@ -382,6 +382,7 @@ MonoBehaviour:
   spawnRateInTicks: 50
   meshRenderer: {fileID: 9141501773626423812}
   spawnOffset: 2
+  spawnOffsetRange: 1.5
   maxWaveSize: 5
   offsetSize: 3
   activeCount: 5

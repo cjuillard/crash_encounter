@@ -13,6 +13,7 @@ namespace Runamuck
         [SerializeField] private int spawnRateInTicks = 50;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private float spawnOffset = 2;
+        [SerializeField] private float spawnOffsetRange = .1f;  // Adds a little variation in the range so they aren't in a perfect line
         [SerializeField] int maxWaveSize = 5;
         [SerializeField] float offsetSize = 4;
 
@@ -106,14 +107,16 @@ namespace Runamuck
 
                 for (int j = 0; j < waveSize; j++)
                 {
-                    Vector3 newPos = basePos;
+                    Vector3 newPos = basePos + dir * (j % 2 == 0 ? spawnOffsetRange : 0);
+                    Vector3 offset = Vector3.zero;
                     if(waveSize > 1)
                     {
-                        newPos += -(orthoDir * offsetSize * 0.5f) + orthoDir * offsetSize * (j / (float)(waveSize - 1));
+                        offset = -(orthoDir * offsetSize * 0.5f) + orthoDir * offsetSize * (j / (float)(waveSize - 1));
+                        newPos += offset;
                     }
                     GameObject go = Instantiate(pawnPrefab, newPos, Quaternion.identity);
                     var pawn = go.GetComponent<Pawn>();
-                    pawn.Init(Owner, other);
+                    pawn.Init(Owner, other, offset);
                     NetworkServer.Spawn(go);
                 }
 

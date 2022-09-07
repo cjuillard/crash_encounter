@@ -9,6 +9,9 @@ namespace Runamuck
 
         [SerializeField] private GameConfig config;
         public GameConfig Config => config;
+        
+        [SerializeField] private GameSkin skin;
+        public static GameSkin Skin => Instance.skin;
 
         private void Awake()
         {

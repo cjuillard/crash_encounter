@@ -9,6 +9,8 @@ namespace Runamuck
     public class Player : NetworkBehaviour
     {
         [SyncVar] [SerializeField] private int playerIndex;
+        public int PlayerIndex => playerIndex;
+
         [SyncVar] [SerializeField] private Color teamColor;
         public Color TeamColor => teamColor;
 
