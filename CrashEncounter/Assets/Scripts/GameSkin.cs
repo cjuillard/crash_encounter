@@ -9,6 +9,9 @@ namespace Runamuck
         public GameObject[] PawnVisuals;
         public GameObject PawnImpactFX;
 
+        [Tooltip("This is the amount of team color to tint our impact particles")]
+        public float ImpactTeamColorLerp = 0.5f;
+
         internal GameObject GetPawn(int playerIndex)
         {
             return PawnVisuals[playerIndex % PawnVisuals.Length];

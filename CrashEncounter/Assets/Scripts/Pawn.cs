@@ -54,7 +54,12 @@ namespace Runamuck
         [ClientRpc]
         public void RpcSpawnImpact(Vector3 impactPos)
         {
-            Instantiate(Game.Skin.PawnImpactFX, impactPos, Quaternion.identity);
+            var impactFX = Instantiate(Game.Skin.PawnImpactFX, impactPos, Quaternion.identity);
+            foreach(ParticleSystem system in impactFX.GetComponentsInChildren<ParticleSystem>())
+            {
+                var mainProps = system.main;
+                mainProps.startColor = Color.Lerp(mainProps.startColor.color, owner.TeamColor, Game.Skin.ImpactTeamColorLerp);
+            }
         }
 
         private void FixedUpdate()
