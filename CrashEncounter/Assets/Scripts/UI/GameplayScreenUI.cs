@@ -71,7 +71,7 @@ namespace Runamuck
             float dist = delta.magnitude;
 
             Vector2 offsetMax = attackArrow.rectTransform.offsetMax;
-            offsetMax.x = dist * canvas.scaleFactor;
+            offsetMax.x = dist / canvas.scaleFactor;
             attackArrow.rectTransform.offsetMax = offsetMax;
         }
 
