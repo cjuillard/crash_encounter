@@ -5268,6 +5268,7 @@ MonoBehaviour:
   spawnOffsetRange: 1.5
   maxWaveSize: 5
   offsetSize: 3
+  transitionClip: {fileID: 8300000, guid: c1726d04415374b73a017619468158d2, type: 3}
   activeCount: 5
   owner: {fileID: 0}
 --- !u!95 &845508386322664184

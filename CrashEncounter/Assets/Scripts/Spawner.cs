@@ -16,8 +16,9 @@ namespace Runamuck
         [SerializeField] private Animator animator;
         [SerializeField] private float spawnOffset = 2;
         [SerializeField] private float spawnOffsetRange = .1f;  // Adds a little variation in the range so they aren't in a perfect line
-        [SerializeField] int maxWaveSize = 5;
-        [SerializeField] float offsetSize = 4;
+        [SerializeField] private int maxWaveSize = 5;
+        [SerializeField] private float offsetSize = 4;
+        [SerializeField] private AudioClip transitionClip;
 
         [SyncVar] [SerializeField]
         private int activeCount = 5;
@@ -90,6 +91,7 @@ namespace Runamuck
         void OnOwnerChange(Player oldOwner, Player newOwner)
         {
             UpdateColor();
+            GameAudio.Instance.PlayClip(transitionClip, transform.position);
         }
 
         public void StartAttack(Spawner other)

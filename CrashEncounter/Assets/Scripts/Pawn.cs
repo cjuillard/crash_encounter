@@ -11,6 +11,8 @@ namespace Runamuck
 
         [SerializeField] private float speed = 1;
         [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private AudioClip spawnClip;
+        [SerializeField] private AudioClip impactClip;
 
         [SyncVar] [SerializeField]
         private Player owner;
@@ -34,6 +36,8 @@ namespace Runamuck
             this.owner = owner;
             this.target = target;
             this.targetOffset = targetOffset;
+
+            GameAudio.Instance.PlayClip(spawnClip, transform.position);
         }
 
         public override void OnStartClient()
@@ -54,6 +58,7 @@ namespace Runamuck
         [ClientRpc]
         public void RpcSpawnImpact(Vector3 impactPos)
         {
+            GameAudio.Instance.PlayClip(impactClip, transform.position);
             var impactFX = Instantiate(Game.Skin.PawnImpactFX, impactPos, Quaternion.identity);
             foreach(ParticleSystem system in impactFX.GetComponentsInChildren<ParticleSystem>())
             {

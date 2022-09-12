@@ -208,6 +208,8 @@ MonoBehaviour:
   syncInterval: 0.1
   speed: 6
   meshRenderer: {fileID: 6950691460511999072}
+  spawnClip: {fileID: 8300000, guid: b71edef5d6eb84fe0b6837f05a411bd4, type: 3}
+  impactClip: {fileID: 8300000, guid: dce0fc50c98b24282867ddc791aa869d, type: 3}
   owner: {fileID: 0}
   target: {fileID: 0}
   targetOffset: {x: 0, y: 0, z: 0}
