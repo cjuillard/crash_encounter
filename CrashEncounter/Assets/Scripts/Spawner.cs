@@ -8,10 +8,12 @@ namespace Runamuck
     public class Spawner : NetworkBehaviour
     {
         private static readonly int BaseColorID = Shader.PropertyToID("_BaseColor");
+        private static readonly int TransitionID = Animator.StringToHash("Transition");
 
         [SerializeField] private GameObject pawnPrefab;
         [SerializeField] private int spawnRateInTicks = 50;
         [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private Animator animator;
         [SerializeField] private float spawnOffset = 2;
         [SerializeField] private float spawnOffsetRange = .1f;  // Adds a little variation in the range so they aren't in a perfect line
         [SerializeField] int maxWaveSize = 5;
@@ -46,7 +48,10 @@ namespace Runamuck
         public override void OnStartClient()
         {
             base.OnStartClient();
-            UpdateColor();
+            
+            // Init color
+            Color newColor = owner != null ? owner.TeamColor : Color.gray;
+            meshMat.SetColor(BaseColorID, newColor);
         }
 
         void FixedUpdate()
@@ -79,6 +84,7 @@ namespace Runamuck
         {
             Color newColor = owner != null ? owner.TeamColor : Color.gray;
             meshMat.SetColor(BaseColorID, newColor);
+            animator.SetTrigger(TransitionID);
         }
 
         void OnOwnerChange(Player oldOwner, Player newOwner)
