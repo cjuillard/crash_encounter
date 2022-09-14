@@ -151,7 +151,7 @@ namespace Runamuck
         /// <returns>False to not allow this player to replace the room player.</returns>
         public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
         {
-            if(mode == NetworkManagerMode.Host)
+            if(mode == NetworkManagerMode.Host || mode == NetworkManagerMode.ServerOnly)
             {
                 var gameState = FindObjectOfType<GameState>();
                 gameState.InitPlayer(this, conn, roomPlayer, gamePlayer);

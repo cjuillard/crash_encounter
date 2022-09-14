@@ -8,11 +8,10 @@ namespace Runamuck
 {
     public class GameplayScreenUI : MonoBehaviour
     {
-        [SerializeField] private Image attackArrow;
         [SerializeField] private Canvas canvas;
         [SerializeField] private GameObject loseWindow;
         [SerializeField] private GameObject winWindow;
-
+        [SerializeField] private AttackArrow attackArrow;
         private Camera mainCam;
 
         private Player player;
@@ -35,15 +34,11 @@ namespace Runamuck
         public void SetAttackArrowEnabled(Spawner startSpawner)
         {
             this.startSpawner = startSpawner;
-            attackArrow.gameObject.SetActive(true);
 
-            Vector3 screenPos = mainCam.WorldToViewportPoint(startSpawner.transform.position);
-            attackArrow.rectTransform.anchorMin = screenPos;
-            attackArrow.rectTransform.anchorMax = screenPos;
-
-            Vector2 offsetMax = attackArrow.rectTransform.offsetMax;
-            offsetMax.x = 0;
-            attackArrow.rectTransform.offsetMax = offsetMax;
+            Vector3 mousePosition = Input.mousePosition;    // TODO update for mobile
+            var targetWorldPos = mainCam.ScreenToWorldPoint(mousePosition);
+            targetWorldPos.y = startSpawner.transform.position.y;
+            attackArrow.Show(startSpawner.transform.position, targetWorldPos);
         }
 
         public void SetAttackArrowDisabled()
@@ -61,18 +56,11 @@ namespace Runamuck
         {
             if (startSpawner == null)
                 return;
-            
-            Vector3 attackArrowStart = attackArrow.transform.position;            
-            Vector2 delta = new Vector2(mousePosition.x, mousePosition.y) - new Vector2(attackArrowStart.x, attackArrowStart.y);
 
-            float zRot = Vector2.SignedAngle(Vector2.right, delta);
-            attackArrow.transform.rotation = Quaternion.Euler(0, 0, zRot);
-
-            float dist = delta.magnitude;
-
-            Vector2 offsetMax = attackArrow.rectTransform.offsetMax;
-            offsetMax.x = dist / canvas.scaleFactor;
-            attackArrow.rectTransform.offsetMax = offsetMax;
+            // Our world lives in the x/z plane
+            var targetWorldPos = mainCam.ScreenToWorldPoint(mousePosition);
+            targetWorldPos.y = startSpawner.transform.position.y;
+            attackArrow.Show(startSpawner.transform.position, targetWorldPos);
         }
 
         private RaycastHit[] results = new RaycastHit[16];
