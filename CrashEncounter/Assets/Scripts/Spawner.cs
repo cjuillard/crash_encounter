@@ -97,22 +97,28 @@ namespace Runamuck
         public void StartAttack(Spawner other)
         {
             StartCoroutine(RunAttack(other));
-            activeCount = 0;
         }
 
         private IEnumerator RunAttack(Spawner other)
         {
-            int maxAttackers = activeCount; // Grab the initial count
-            activeCount = 0;
+            int initialActiveCount = activeCount; // Grab the initial count
+            Player initialOwner = Owner;
 
             Vector3 dir = (other.transform.position - transform.position).normalized;
             Vector3 orthoDir = new Vector3(-dir.z, dir.y, dir.x);
 
-            for (int i = 0; i < maxAttackers; i+= maxWaveSize)
+            for (int i = 0; i < initialActiveCount; i+= maxWaveSize)
             {
-                int waveSize = Math.Min(maxWaveSize, maxAttackers - i);
-                Vector3 basePos = transform.position + dir * spawnOffset;
+                if (activeCount == 0)   // This can happen if you try to send off multiple attacks from the same Spawner or this Spawner gets attacked
+                    yield break;
+                if (initialOwner != Owner)
+                    yield break;
 
+                // Get the wave size, constrained by both the initial active count and the current active count
+                int waveSize = Math.Min(maxWaveSize, initialActiveCount - i);
+                waveSize = Math.Min(waveSize, activeCount);
+
+                Vector3 basePos = transform.position + dir * spawnOffset;
                 for (int j = 0; j < waveSize; j++)
                 {
                     Vector3 newPos = basePos + dir * (j % 2 == 0 ? spawnOffsetRange : 0);
@@ -128,6 +134,8 @@ namespace Runamuck
                     NetworkServer.Spawn(go);
                 }
 
+                activeCount -= waveSize;
+
                 yield return new WaitForSeconds(.5f);
             }
             yield return null;
@@ -136,6 +144,8 @@ namespace Runamuck
         public void Capture(Player player)
         {
             Owner = player;
+            if (ActiveCount < 0)
+                activeCount = 0;
         }
 
         public void GiveUpOwnership()

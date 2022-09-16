@@ -135,7 +135,7 @@ namespace Runamuck
             else
             {
                 target.DecrementActiveCount();
-                if (target.ActiveCount == 0)
+                if (target.ActiveCount <= 0)
                     target.Capture(owner);
             }
             ServerDestroy();
