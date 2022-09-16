@@ -122,7 +122,7 @@ namespace Runamuck
                         offset = -(orthoDir * offsetSize * 0.5f) + orthoDir * offsetSize * (j / (float)(waveSize - 1));
                         newPos += offset;
                     }
-                    GameObject go = Instantiate(pawnPrefab, newPos, Quaternion.identity);
+                    GameObject go = Instantiate(pawnPrefab, newPos, Quaternion.FromToRotation(Vector3.forward, dir));
                     var pawn = go.GetComponent<Pawn>();
                     pawn.Init(Owner, other, offset);
                     NetworkServer.Spawn(go);
